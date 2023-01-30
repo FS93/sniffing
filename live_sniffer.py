@@ -45,7 +45,7 @@ def packet_callback(_):
                 'srcport': packet.sport if hasattr(packet, "sport") else "NULL",
                 'dstport': packet.dport if hasattr(packet, "dport") else "NULL",
                 'payload_utf8': bytearray(packet.load).decode("utf_8", "ignore").replace(r'\n', r' ') if hasattr(packet, "load") else "NULL",
-                'payload_length': len(packet.load) if hasattr(packet, "load") else 0
+                'payload_len': len(packet.load) if hasattr(packet, "load") else 0
             })
 
 
@@ -165,7 +165,27 @@ def main():
     cap = annotate(cap)
 
     # Export 
-    cap.to_csv(out_name + ".csv", escapechar='\\', index=False, quotechar="'", sep="\t", quoting=csv.QUOTE_ALL)
+    cap.to_csv(out_name + ".csv", escapechar='\\', index=False, quotechar="'", sep="\t", quoting=csv.QUOTE_ALL,\
+                columns = ['frame_number',
+                            'frame_time_epoch',
+                            'no_layers',
+                            'frame_len',
+                            'eth_src',
+                            'device_name_src',
+                            'eth_dst',
+                            'device_name_dst',
+                            'eth_type',
+                            'ip_src',
+                            'srcport',
+                            'ip_dst',
+                            'dstport',
+                            'ip_proto',
+                            'payload_utf8',
+                            'payload_len',
+                            'action',
+                            'attack'
+                            ]
+    )
     os.chown(out_name + ".csv", 1000, 1000)
     
 

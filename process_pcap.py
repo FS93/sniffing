@@ -151,7 +151,27 @@ def main():
     cap = annotate(cap)
 
     # Export 
-    cap.to_csv(out_file, escapechar='\\', index=False, quotechar="'", sep="\t", quoting=csv.QUOTE_ALL)
+    cap.to_csv(out_file, escapechar='\\', index=False, quotechar="'", sep="\t", quoting=csv.QUOTE_ALL,\
+                columns = ['frame_number',
+                            'frame_time_epoch',
+                            'no_layers',
+                            'frame_len',
+                            'eth_src',
+                            'device_name_src',
+                            'eth_dst',
+                            'device_name_dst',
+                            'eth_type',
+                            'ip_src',
+                            'srcport',
+                            'ip_dst',
+                            'dstport',
+                            'ip_proto',
+                            'payload_utf8',
+                            'payload_len',
+                            'action',
+                            'attack'
+                            ]
+                    )
     os.chown(out_file, 1000, 1000)
     
 
