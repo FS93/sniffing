@@ -1,0 +1,7 @@
+*.csv
+*.pcap
+*.pdf
+*.txt
+!requirements.txt
+/VirtEnv_sniffing/*
+/.idea
