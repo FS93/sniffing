@@ -13,9 +13,13 @@ data = []
 
 
 # Mapping Device Name: Device MAC (and vice versa)
-devices_name_mac = {    
+devices_name_mac = { 
+        # Gruppe 1   
         "LDR TUYA":"D8:F1:5B:D8:08:0C",\
         "GARAGE_DOOR":"48:E1:E9:44:4C:52",\
+        "LDR TAPO": "6C:5A:B0:7D:E2:25",\
+        # Gruppe 2
+        "LDR": "D8:1F:12:65:89:97",\
         "SmartSocket1":"54:AF:97:7C:5E:F0",\
         "Lampe1":"A8:03:24:B1:35:60",\
         "Lampe2":"60:01:94:C7:69:AC"
