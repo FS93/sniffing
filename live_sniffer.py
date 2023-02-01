@@ -5,7 +5,7 @@ import os
 import sys
 import pandas as pd
 import csv
-from scapy.all import conf, sniff, PcapWriter
+from scapy.all import *
 
 
 packet_counter = 0
@@ -48,7 +48,8 @@ def packet_callback(_):
                 'ip_proto': packet["IP"].proto if "IP" in packet else "NULL",
                 'srcport': packet.sport if hasattr(packet, "sport") else "NULL",
                 'dstport': packet.dport if hasattr(packet, "dport") else "NULL",
-                'payload_utf8': bytearray(packet.load).decode("utf_8", "ignore").replace(r'\n', r' ') if hasattr(packet, "load") else "NULL",
+                'payload_utf8_tcp': bytes(packet[TCP].payload).decode("utf_8", "ignore").replace(r'\n', r' ') if packet.haslayer(TCP) else "",
+                'payload_utf8_udp': bytes(packet[UDP].payload).decode("utf_8", "ignore").replace(r'\n', r' ') if packet.haslayer(UDP) else "",
                 'payload_len': len(packet.load) if hasattr(packet, "load") else 0
             })
 
@@ -72,6 +73,10 @@ def write_pcap(fname, cptr):
     os.chown(fname, 1000, 1000)
 
 def annotate(cap):
+
+    # Merge UDP and TCP Payload columns
+    cap = cap.assign(payload_utf8 = lambda df: df.payload_utf8_tcp + df.payload_utf8_udp)
+    cap['payload_utf8'] = cap['payload_utf8'].map(lambda x: "NULL" if x == '' else x)
 
     # Append device names
     cap['device_name_src'] = cap['eth_src'].map(devices_mac_name)
@@ -156,7 +161,7 @@ def main():
 
     # Sniff <count> packets on access point interface
     capture = sniff(prn=packet_callback,
-                    iface="ap0",
+                    iface="wlp3s0",#"ap0",
                     filter=get_bpf_filter(),
                     monitor=True,
                     count=count)

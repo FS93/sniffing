@@ -5,7 +5,7 @@ import os
 import sys
 import pandas as pd
 import csv
-from scapy.all import conf, rdpcap
+from scapy.all import *
 
 
 packet_counter = 0
@@ -122,11 +122,16 @@ def pcap_to_df(pcap_path):
                 'ip_proto': packet["IP"].proto if "IP" in packet else "NULL",
                 'srcport': packet.sport if hasattr(packet, "sport") else "NULL",
                 'dstport': packet.dport if hasattr(packet, "dport") else "NULL",
-                'payload_utf8': bytearray(packet.load).decode("utf_8", "ignore").replace(r'\n', r' ') if hasattr(packet, "load") else "NULL",
+                'payload_utf8_tcp': bytes(packet[TCP].payload).decode("utf_8", "ignore").replace(r'\n', r' ') if packet.haslayer(TCP) else "",
+                'payload_utf8_udp': bytes(packet[UDP].payload).decode("utf_8", "ignore").replace(r'\n', r' ') if packet.haslayer(UDP) else "",
                 'payload_len': len(packet.load) if hasattr(packet, "load") else 0
             })
 
-    return pd.DataFrame(data)
+    cap_df = pd.DataFrame(data)
+    cap_df = cap_df.assign(payload_utf8 = lambda df: df.payload_utf8_tcp + df.payload_utf8_udp)
+    cap_df['payload_utf8'] = cap_df['payload_utf8'].map(lambda x: "NULL" if x == '' else x)
+
+    return cap_df
 
 def dump_config(fname):
     with open(fname, "w") as f:
