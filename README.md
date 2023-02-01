@@ -8,7 +8,7 @@
 
 1) Access point (ap0) erstellen mit <https://github.com/lakinduakash/linux-wifi-hotspot>
 2) Virtuelle Umgebung erstellen & aktivieren: `python -m venv VirtEnv_sniffing; source VirtEnv_sniffing/bin/activate`
-3) Pakete installieren: `pip install -r requirements.txt`
+3) Pakete installieren: `pip install -r requirements.txt; sudo pip install -r requirements.txt` (zum Live Sniffing werden root Rechte benötigt)
 4) `cd src`
 5) Anwendungsfall
    1) PCAP vorhanden: `./process_pcap.py --in_pcap <Dateipfad PCAP-File> --out_csv <Dateipfad CSV-Output>`
